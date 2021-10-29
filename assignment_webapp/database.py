@@ -154,8 +154,9 @@ def check_login(username, password):
         #############################################################################
 
         sql = """
-        
-        
+        SELECT *
+        FROM mediaserver.UserAccount
+        WHERE username=%s AND password=%s;
         """
         print(username)
         print(password)
@@ -233,9 +234,12 @@ def user_playlists(username):
         # Fill in the SQL below and make sure you get all the playlists for this user #
         ###############################################################################
         sql = """
-        
+        SELECT mc.collection_id, mc.collection_name, COUNT(mcc.media_id)
+        FROM mediaserver.MediaCollection mc
+                JOIN mediaserver.MediaCollectionContents mcc USING (collection_id)
+        WHERE username=%s
+        GROUP BY collection_id;
         """
-
 
         print("username is: "+username)
         r = dictfetchall(cur,sql,(username,))
@@ -275,8 +279,10 @@ def user_podcast_subscriptions(username):
         #################################################################################
 
         sql = """
+        SELECT sp.podcast_id, podcast_title, podcast_uri, podcast_last_updated
+        FROM mediaserver.Subscribed_Podcasts sp JOIN mediaserver.Podcast USING (podcast_id)
+        WHERE username=%s;
         """
-
 
         r = dictfetchall(cur,sql,(username,))
         print("return val is:")
@@ -314,7 +320,10 @@ def user_in_progress_items(username):
         ###################################################################################
 
         sql = """
-
+        SELECT m.media_id, umc.play_count AS playcount, umc.progress,umc.lastviewed,m.storage_location
+        FROM mediaserver.MediaItem m JOIN mediaserver.UserMediaConsumption umc USING(media_id)
+        WHERE umc.progress <> 100.00 and umc.progress <> and umc.username = %s
+        ORDER BY umc.lastviewed
         """
 
         r = dictfetchall(cur,sql,(username,))
@@ -1258,8 +1267,9 @@ def find_matchingmovies(searchterm):
         # Fill in the SQL below with a query to get all information about movies    #
         # that match a given search term                                            #
         #############################################################################
-        sql = """
-        """
+        sql = """select *
+        from mediaserver.movie m
+        where lower(m.movie_title) = lower(%s);"""
 
         r = dictfetchall(cur,sql,(searchterm,))
         print("return val is:")

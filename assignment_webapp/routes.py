@@ -717,26 +717,29 @@ def search_movies():
     # a movie                                                                   #
     #############################################################################
 
-    page['title'] = '' # Add the title
+    page['title'] = 'Movie Search' # Add the title
 
+    movies = None
     if request.method == 'POST':
         # Set up some variables to manage the post returns
-
-        # Once retrieved, do some data integrity checks on the data
-
-        # Once verified, send the appropriate data to 
-
-        # NOTE :: YOU WILL NEED TO MODIFY THIS TO PASS THE APPROPRIATE VARIABLES or Go elsewhere
-        return render_template('searchitems/search_movies.html',
-                    session=session,
-                    page=page,
-                    user=user_details)
+        movies = database.find_matchingmovies(request.form['searchterm'])
+    # Once retrieved, do some data integrity checks on the data
+    if movies == None or movies == []:
+        movies = []
+        page['bar'] = False
+        flash("No matching movies found, please try again")
+    # Once verified, send the appropriate data to 
     else:
-        # NOTE :: YOU WILL NEED TO MODIFY THIS TO PASS THE APPROPRIATE VARIABLES
-        return render_template('searchitems/search_movies.html',
-                           session=session,
-                           page=page,
-                           user=user_details)
+        page['bar'] = True
+        flash('Found '+str(len(movies))+' results!')
+        session['logged_in'] = True
+
+    # NOTE :: YOU WILL NEED TO MODIFY THIS TO PASS THE APPROPRIATE VARIABLES or Go elsewhere
+    return render_template('searchitems/search_movies.html',
+                session=session,
+                page=page,
+                user=user_details,
+                movies = movies)
 
 
 #####################################################
