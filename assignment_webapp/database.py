@@ -633,6 +633,14 @@ def get_song(song_id):
         # and the artists that performed it                                         #
         #############################################################################
         sql = """
+        select 
+            s.song_title,s.length, string_agg(saa.artist_name,',') as artists
+        from 
+            mediaserver.song s left outer join 
+            (mediaserver.Song_Artists sa join mediaserver.Artist a on (sa.performing_artist_id=a.artist_id)
+            ) as saa  on (s.song_id=saa.song_id)
+	    where s.song_id =%s
+        group by s.song_title,s.length
         """
 
         r = dictfetchall(cur,sql,(song_id,))
