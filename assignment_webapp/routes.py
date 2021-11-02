@@ -395,6 +395,7 @@ def single_song(song_id):
     if songmetadata == None:
         songmetadata = []
 
+
     return render_template('singleitems/song.html',
                            session=session,
                            page=page,
@@ -907,7 +908,7 @@ def add_song():
         print(newdict)
 
         #forward to the database to manage insert
-        songs = database.add_song_to_db(newdict['storage_location'],newdict['description'],newdict['song_title'],newdict['song_length'],newdict['song_genre'],newdict['artist_id'])
+        songs = database.add_song_to_db(newdict['storage_location'],newdict['description'],newdict['song_title'],newdict['song_length'],newdict['song_genre'],newdict['artist_id'],newdict['artwork'])
 
 
         max_song_id = database.get_last_song()[0]['song_id']

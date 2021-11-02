@@ -305,7 +305,8 @@ create or replace function mediaserver.addSong(
 	title varchar(250),
 	songlength int,
 	songgenre text,
-    artistid int)
+    artistid int,
+    artwork text)
 RETURNS int AS
 $BODY$
     	WITH ins1 AS (
@@ -339,6 +340,15 @@ $BODY$
         ),ins7 AS(
         INSERT INTO mediaserver.Song_Artists
         SELECT media_id,artistid FROM ins1
+		),ins8 AS(
+        INSERT INTO mediaserver.metadata (md_type_id,md_value)
+        SELECT md_type_id, artwork
+        FROM mediaserver.MetaDataType where md_type_name = 'artwork'
+        RETURNING md_id
+		),
+        ins9 AS(
+        INSERT INTO mediaserver.MediaItemMetaData
+        SELECT media_id, md_id FROM ins1, ins8
 		)
         INSERT INTO mediaserver.MediaItemMetaData
         SELECT media_id, md_id FROM ins1, ins2;
