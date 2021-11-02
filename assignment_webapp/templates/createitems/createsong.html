@@ -27,6 +27,45 @@
             needed to this page (such as artists, metadata type id's or values) and then manage the display similar to what is
             done in the drop down menu for the search bar
         -->
+
+        <form class="Add" method="POST" action="{{url_for('add_song')}}">
+
+            Song title: <input type="text" name="song_title" value="Empty Song" placeholder="Song name">
+            Song length: <input type="text" name="song_length" value="0" placeholder="0">
+            Artist Id: <select name="artist_id">
+                        <option value="1">The Beatles</option>
+                        <option value="2">Billy Preston</option>
+                        <option value="3">Taylor Swift</option>
+                        <option value="4">Kanye West</option>
+                        <option value="5">Sunday Service Choir</option>
+                        <option value="6">Ty Dolla $ign</option>
+                        <option value="7">Ant Clemons</option>
+                        <option value="8">Fred Hammond</option>
+                        <option value="9">Clipse</option>
+                        <option value="10">Kenny Gn</option>
+                        <option value="11">Eagles</option>
+                        <option value="12">Journey</option>
+                        <option value="13">Bon Jovi</option>
+                        <option value="14">Fall Out Boy</option>
+                        <option value="15">Shannon Noll</option>
+                        <option value="16">Billie Eilish</option>
+                        <option value="17">David Bowie</option>
+                        <option value="18">Ed Sheeran</option>
+                    </select>
+            <br/>
+            Storage location: <input type="text" name="storage_location" value="no location" placeholder="Storage location">
+            Description: <input type="text" name="description" value="no description" placeholder="Description">
+            <br/>
+            Song Genre: <input type="text" name="song_genre" value="pop" placeholder="pop">
+            Artwork: <input type="text" name="artwork" value="notfound.png" placeholder="notfound.png">
+            <br/>
+            <button class="flat" type="submit">Add</button>
+            <br/>
+            <hr/>
+            <hr/>
+            <hr/>
+        </form>
+        
  
         <br/>
         <div>
