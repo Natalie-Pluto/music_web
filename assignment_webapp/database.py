@@ -633,11 +633,14 @@ def get_song(song_id):
         # and the artists that performed it                                         #
         #############################################################################
         sql = """
-        SELECT s.song_id, s.song_title, s.length, a.artist_name AS artists
-        FROM mediaserver.Song s 
-            JOIN mediaserver.Song_Artists sa USING (song_id)
-            JOIN mediaserver.Artist a ON (a.artist_id = sa.performing_artist_id)
-        WHERE S.song_id = %s;
+        select 
+            s.song_title,s.length, string_agg(saa.artist_name,',') as artists
+        from 
+            mediaserver.song s left outer join 
+            (mediaserver.Song_Artists sa join mediaserver.Artist a on (sa.performing_artist_id=a.artist_id)
+            ) as saa  on (s.song_id=saa.song_id)
+	    where s.song_id =%s
+        group by s.song_title,s.length
         """
 
         r = dictfetchall(cur,sql,(song_id,))
@@ -677,11 +680,20 @@ def get_song_metadata(song_id):
         #############################################################################
 
         sql = """
-         SELECT *
-            FROM mediaserver.MediaItemMetaData MIMD
-            JOIN mediaserver.MetaData USING (md_id)
-            JOIN mediaserver.MetaDataType USING (md_type_id)
-        WHERE MIMD.media_id = %s;
+
+        select 
+		distinct md1.md_value as description, md2.md_value as Artwork, string_agg(md3.md_value, ',') as Song_Genres
+		from 
+			mediaserver.song s join ((mediaserver.Song_Artists sa join mediaserver.Artist a on (sa.performing_artist_id=a.artist_id)
+             ) natural join mediaserver.ArtistMetaData ad) using (song_id) join mediaserver.metadata md1 using (md_id),
+			mediaserver.song ss join ((mediaserver.Album_Songs natural join mediaserver.Album
+			) natural join mediaserver.AlbumMetaData ald) using (song_id) join mediaserver.metadata md2 using (md_id),
+			mediaserver.song sss join (mediaserver.AudioMedia natural join mediaserver.MediaItemMetaData
+			) as audd on (sss.song_id = audd.media_id) join mediaserver.metadata md3 using (md_id)
+		
+		where sss.song_id =%s and ss.song_id =%s and s.song_id =%s
+		group by md1.md_value, md2.md_value
+
         """
 
         r = dictfetchall(cur,sql,(song_id,))
