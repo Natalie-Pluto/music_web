@@ -1011,6 +1011,7 @@ def get_genre_songs(genre_id):
         # songs which belong to a particular genre_id                               #
         #############################################################################
         sql = """
+        
         """
 
         r = dictfetchall(cur, sql, (genre_id,))
