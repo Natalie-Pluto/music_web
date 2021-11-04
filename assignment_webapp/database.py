@@ -685,21 +685,14 @@ def get_song_metadata(song_id):
         #############################################################################
 
         sql = """
-        select 
-		distinct md1.md_value as description, md2.md_value as Artwork, string_agg(md3.md_value, ',') as Song_Genres
+        select md_value,md_type_name
 		from 
-			mediaserver.song s join ((mediaserver.Song_Artists sa join mediaserver.Artist a on (sa.performing_artist_id=a.artist_id)
-             ) natural join mediaserver.ArtistMetaData ad) using (song_id) join mediaserver.metadata md1 using (md_id),
-			mediaserver.song ss join ((mediaserver.Album_Songs natural join mediaserver.Album
-			) natural join mediaserver.AlbumMetaData ald) using (song_id) join mediaserver.metadata md2 using (md_id),
-			mediaserver.song sss join (mediaserver.AudioMedia natural join mediaserver.MediaItemMetaData
-			) as audd on (sss.song_id = audd.media_id) join mediaserver.metadata md3 using (md_id)
+			mediaserver.MediaItemMetaData m natural join mediaserver.metadata  natural join mediaserver.metadatatype
 		
-		where sss.song_id =%s and ss.song_id =%s and s.song_id =%s
-		group by md1.md_value, md2.md_value
+		where m.media_id =%s
         """
 
-        r = dictfetchall(cur, sql, (song_id,))
+        r = dictfetchall(cur,sql,(song_id,))
         print("return val is:")
         print(r)
         cur.close()  # Close the cursor
@@ -737,6 +730,12 @@ def get_podcast(podcast_id):
         # including all metadata associated with it                                 #
         #############################################################################
         sql = """
+		SELECT *
+		FROM mediaserver.Podcast P
+			LEFT OUTER JOIN (
+				mediaserver.PodcastMetaData NATURAL JOIN mediaserver.MetaData NATURAL JOIN mediaserver.MetaDataType
+			) META ON (META.podcast_id = P.podcast_id)
+		WHERE P.podcast_id=%s
         """
 
         r = dictfetchall(cur, sql, (podcast_id,))
@@ -1355,18 +1354,72 @@ def add_movie_to_db(title, release_year, description, storage_location, genre):
 #   Query (8)
 #   Add a new Song
 #####################################################
-def add_song_to_db(song_params):
+def add_song_to_db(location,songdescription,title,songlength,songgenre,artistid,artwork):
     """
     Get all the matching Movies in your media server
     """
-    #########
-    # TODO  #  
-    #########
-
     #############################################################################
     # Fill in the Function  with a query and management for how to add a new    #
     # song to your media server. Make sure you manage all constraints           #
     #############################################################################
+    conn = database_connect()
+    if(conn is None):
+        return None
+    cur = conn.cursor()
+    try:
+        # Try executing the SQL and get from the database
+        sql = """
+        SELECT 
+            mediaserver.addSong(
+                %s,%s,%s,%s,%s,%s,%s);
+        """
+        cur.execute(sql,(location,songdescription,title,songlength,songgenre,artistid,artwork))
+        conn.commit()                   # Commit the transaction
+        r = cur.fetchone()
+        print("return val is:")
+        print(r)
+        cur.close()                     # Close the cursor
+        conn.close()                    # Close the connection to the db
+        return r
+    except:
+        # If there were any errors, return a NULL row printing an error to the debug
+        print("Unexpected error adding a song:", sys.exc_info()[0])
+        raise
+    cur.close()                     # Close the cursor
+    conn.close()  
+
+    return None
+
+
+#####################################################
+#   Get last Song
+#####################################################
+def get_last_song():
+    """
+    Get all the latest entered movie in your media server
+    """
+
+    conn = database_connect()
+    if(conn is None):
+        return None
+    cur = conn.cursor()
+    try:
+        # Try executing the SQL and get from the database
+        sql = """
+        select max(song_id) as song_id from mediaserver.Song"""
+
+        r = dictfetchone(cur,sql)
+        print("return val is:")
+        print(r)
+        cur.close()                     # Close the cursor
+        conn.close()                    # Close the connection to the db
+        return r
+    except:
+        # If there were any errors, return a NULL row printing an error to the debug
+        print("Unexpected error adding a song", sys.exc_info()[0])
+        raise
+    cur.close()                     # Close the cursor
+    conn.close()                    # Close the connection to the db
     return None
 
 
