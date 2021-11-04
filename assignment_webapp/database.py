@@ -687,8 +687,8 @@ def get_song_metadata(song_id):
         sql = """
         select md_value,md_type_name
 		from 
-			mediaserver.MediaItemMetaData m natural join mediaserver.metadata  natural join mediaserver.metadatatype
-		
+			mediaserver.MediaItemMetaData m natural join mediaserver.metadata  
+											natural join mediaserver.metadatatype
 		where m.media_id =%s
         """
 
@@ -857,6 +857,13 @@ def get_album(album_id):
         # including all relevant metadata                                           #
         #############################################################################
         sql = """
+        select 
+            ab.album_title, md_value, md_type_name
+        from 
+            mediaserver.album ab natural join mediaserver.AlbumMetaData 
+								 natural join mediaserver.metadata  
+								 natural join mediaserver.metadatatype
+		where ab.album_id =%s
         """
 
         r = dictfetchall(cur, sql, (album_id,))
@@ -897,6 +904,7 @@ def get_album_songs(album_id):
         # songs in an album, including their artists                                #
         #############################################################################
         sql = """
+        
         """
 
         r = dictfetchall(cur, sql, (album_id,))
@@ -1386,7 +1394,7 @@ def add_song_to_db(location,songdescription,title,songlength,songgenre,artistid,
         print("Unexpected error adding a song:", sys.exc_info()[0])
         raise
     cur.close()                     # Close the cursor
-    conn.close()  
+    conn.close()
 
     return None
 
