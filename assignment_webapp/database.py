@@ -904,7 +904,16 @@ def get_album_songs(album_id):
         # songs in an album, including their artists                                #
         #############################################################################
         sql = """
-        
+        select
+		    s.song_id as Song_ID, s.song_title as Song_Title, string_agg(saa.artist_name,',') as artists
+	    from 
+            mediaserver.song s natural join mediaserver.album_songs albs 
+            join
+            (mediaserver.Song_Artists sa join mediaserver.Artist a on (sa.performing_artist_id=a.artist_id)
+            ) as saa on (s.song_id=saa.song_id)
+								
+	    where albs.album_id =%s
+        group by s.song_id, s.song_title
         """
 
         r = dictfetchall(cur, sql, (album_id,))
@@ -945,6 +954,7 @@ def get_album_genres(album_id):
         # genres in an album (based on all the genres of the songs in that album)   #
         #############################################################################
         sql = """
+        
         """
 
         r = dictfetchall(cur, sql, (album_id,))
