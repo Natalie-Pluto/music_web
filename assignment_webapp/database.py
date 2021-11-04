@@ -954,7 +954,15 @@ def get_album_genres(album_id):
         # genres in an album (based on all the genres of the songs in that album)   #
         #############################################################################
         sql = """
-        
+        select 
+            string_agg(distinct md.md_value, ',') as Genres
+	    from 
+           (mediaserver.song s natural join mediaserver.album_songs albs) as s  
+		   join (mediaserver.AudioMedia natural join mediaserver.MediaItemMetaData) as audd 
+		   on (s.song_id = audd.media_id) 
+		   join mediaserver.metadata md using (md_id)
+           								
+	    where s.album_id =%s
         """
 
         r = dictfetchall(cur, sql, (album_id,))
