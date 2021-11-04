@@ -9,6 +9,7 @@ import json
 import sys
 from modules import pg8000
 
+
 ################################################################################
 #   Welcome to the database file, where all the query magic happens.
 #   My biggest tip is look at the *week 8 lab*.
@@ -70,6 +71,7 @@ def database_connect():
     # return the connection to use
     return connection
 
+
 ##################################################
 # Print a SQL string to see how it would insert  #
 ##################################################
@@ -81,9 +83,10 @@ def print_sql_string(inputstring, params=None):
 
     if params is not None:
         if params != []:
-           inputstring = inputstring.replace("%s","'%s'")
-    
+            inputstring = inputstring.replace("%s", "'%s'")
+
     print(inputstring % params)
+
 
 #####################################################
 #   SQL Dictionary Fetch
@@ -97,35 +100,35 @@ def print_sql_string(inputstring, params=None):
 #           etc.]
 #####################################################
 
-def dictfetchall(cursor,sqltext,params=None):
+def dictfetchall(cursor, sqltext, params=None):
     """ Returns query results as list of dictionaries."""
-    
+
     result = []
     if (params is None):
         print(sqltext)
     else:
         print("we HAVE PARAMS!")
-        print_sql_string(sqltext,params)
-    
-    cursor.execute(sqltext,params)
+        print_sql_string(sqltext, params)
+
+    cursor.execute(sqltext, params)
     cols = [a[0].decode("utf-8") for a in cursor.description]
     print(cols)
     returnres = cursor.fetchall()
     for row in returnres:
-        result.append({a:b for a,b in zip(cols, row)})
+        result.append({a: b for a, b in zip(cols, row)})
     # cursor.close()
     return result
 
-def dictfetchone(cursor,sqltext,params=None):
+
+def dictfetchone(cursor, sqltext, params=None):
     """ Returns query results as list of dictionaries."""
     # cursor = conn.cursor()
     result = []
-    cursor.execute(sqltext,params)
+    cursor.execute(sqltext, params)
     cols = [a[0].decode("utf-8") for a in cursor.description]
     returnres = cursor.fetchone()
-    result.append({a:b for a,b in zip(cols, returnres)})
+    result.append({a: b for a, b in zip(cols, returnres)})
     return result
-
 
 
 #####################################################
@@ -140,7 +143,7 @@ def check_login(username, password):
         - False => return None
     """
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -161,16 +164,16 @@ def check_login(username, password):
         print(username)
         print(password)
 
-        r = dictfetchone(cur,sql,(username,password))
+        r = dictfetchone(cur, sql, (username, password))
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Error Invalid Login")
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -187,7 +190,7 @@ def is_superuser(username):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -195,20 +198,21 @@ def is_superuser(username):
         sql = """SELECT isSuper
                  FROM mediaserver.useraccount
                  WHERE username=%s AND isSuper"""
-        print("username is: "+username)
+        print("username is: " + username)
         cur.execute(sql, (username))
-        r = cur.fetchone()              # Fetch the first row
+        r = cur.fetchone()  # Fetch the first row
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
+
 
 #####################################################
 #   Query (1 b)
@@ -222,7 +226,7 @@ def user_playlists(username):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -241,20 +245,21 @@ def user_playlists(username):
         GROUP BY collection_id;
         """
 
-        print("username is: "+username)
-        r = dictfetchall(cur,sql,(username,))
+        print("username is: " + username)
+        r = dictfetchall(cur, sql, (username,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting User Playlists:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
+
 
 #####################################################
 #   Query (1 a)
@@ -266,7 +271,7 @@ def user_podcast_subscriptions(username):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -284,18 +289,19 @@ def user_podcast_subscriptions(username):
         WHERE username=%s;
         """
 
-        r = dictfetchall(cur,sql,(username,))
+        r = dictfetchall(cur, sql, (username,))
         print("return val is:")
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting Podcast subs:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
+
 
 #####################################################
 #   Query (1 c)
@@ -307,7 +313,7 @@ def user_in_progress_items(username):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -326,17 +332,17 @@ def user_in_progress_items(username):
         ORDER BY umc.lastviewed
         """
 
-        r = dictfetchall(cur,sql,(username,))
+        r = dictfetchall(cur, sql, (username,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting User Consumption - Likely no values:", sys.exc_info()[0])
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -349,7 +355,7 @@ def get_allartists():
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -361,18 +367,18 @@ def get_allartists():
         group by a.artist_id, a.artist_name
         order by a.artist_name;"""
 
-        r = dictfetchall(cur,sql)
+        r = dictfetchall(cur, sql)
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting All Artists:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -385,7 +391,7 @@ def get_allsongs():
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -399,18 +405,18 @@ def get_allsongs():
         group by s.song_id, s.song_title
         order by s.song_id"""
 
-        r = dictfetchall(cur,sql)
+        r = dictfetchall(cur, sql)
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting All Songs:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -423,7 +429,7 @@ def get_allpodcasts():
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -439,20 +445,19 @@ def get_allpodcasts():
                     group by p1.podcast_id) pnew 
             where p.podcast_id = pnew.podcast_id;"""
 
-        r = dictfetchall(cur,sql)
+        r = dictfetchall(cur, sql)
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting All Podcasts:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
-
 
 
 #####################################################
@@ -464,7 +469,7 @@ def get_allalbums():
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -484,20 +489,19 @@ def get_allalbums():
                 group by a1.album_id) anew 
             where a.album_id = anew.album_id;"""
 
-        r = dictfetchall(cur,sql)
+        r = dictfetchall(cur, sql)
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting All Albums:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
-
 
 
 #####################################################
@@ -510,7 +514,7 @@ def get_alltvshows():
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -524,18 +528,18 @@ def get_alltvshows():
         sql = """
         """
 
-        r = dictfetchall(cur,sql)
+        r = dictfetchall(cur, sql)
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting All TV Shows:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -548,7 +552,7 @@ def get_allmovies():
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -560,18 +564,18 @@ def get_allmovies():
         group by m.movie_id, m.movie_title, m.release_year
         order by movie_id;"""
 
-        r = dictfetchall(cur,sql)
+        r = dictfetchall(cur, sql)
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting All Movies:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -584,7 +588,7 @@ def get_artist(artist_id):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -595,18 +599,18 @@ def get_artist(artist_id):
         on (a.artist_id=amd.artist_id)
         where a.artist_id=%s"""
 
-        r = dictfetchall(cur,sql,(artist_id,))
+        r = dictfetchall(cur, sql, (artist_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
-        print("Unexpected error getting Artist with ID: '"+artist_id+"'", sys.exc_info()[0])
+        print("Unexpected error getting Artist with ID: '" + artist_id + "'", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -620,7 +624,7 @@ def get_song(song_id):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -643,19 +647,20 @@ def get_song(song_id):
         group by s.song_title,s.length
         """
 
-        r = dictfetchall(cur,sql,(song_id,))
+        r = dictfetchall(cur, sql, (song_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting All Songs:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
+
 
 #####################################################
 #   Query (2 d)
@@ -667,7 +672,7 @@ def get_song_metadata(song_id):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -694,19 +699,20 @@ def get_song_metadata(song_id):
 		group by md1.md_value, md2.md_value
         """
 
-        r = dictfetchall(cur,sql,(song_id,))
+        r = dictfetchall(cur, sql, (song_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
-        print("Unexpected error getting song metadata for ID: "+song_id, sys.exc_info()[0])
+        print("Unexpected error getting song metadata for ID: " + song_id, sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
+
 
 #####################################################
 #   Query (6 a,b,c,d,e)
@@ -718,7 +724,7 @@ def get_podcast(podcast_id):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -733,19 +739,20 @@ def get_podcast(podcast_id):
         sql = """
         """
 
-        r = dictfetchall(cur,sql,(podcast_id,))
+        r = dictfetchall(cur, sql, (podcast_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
-        print("Unexpected error getting Podcast with ID: "+podcast_id, sys.exc_info()[0])
+        print("Unexpected error getting Podcast with ID: " + podcast_id, sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
+
 
 #####################################################
 #   Query (6 f)
@@ -757,7 +764,7 @@ def get_all_podcasteps_for_podcast(podcast_id):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -769,22 +776,22 @@ def get_all_podcasteps_for_podcast(podcast_id):
         # Fill in the SQL below with a query to get all information about all       #
         # podcast episodes in a podcast                                             #
         #############################################################################
-        
+
         sql = """
         """
 
-        r = dictfetchall(cur,sql,(podcast_id,))
+        r = dictfetchall(cur, sql, (podcast_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
-        print("Unexpected error getting All Podcast Episodes for Podcast with ID: "+podcast_id, sys.exc_info()[0])
+        print("Unexpected error getting All Podcast Episodes for Podcast with ID: " + podcast_id, sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -798,7 +805,7 @@ def get_podcastep(podcastep_id):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -813,18 +820,18 @@ def get_podcastep(podcastep_id):
         sql = """
         """
 
-        r = dictfetchall(cur,sql,(podcastep_id,))
+        r = dictfetchall(cur, sql, (podcastep_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
-        print("Unexpected error getting Podcast Episode with ID: "+podcastep_id, sys.exc_info()[0])
+        print("Unexpected error getting Podcast Episode with ID: " + podcastep_id, sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -838,7 +845,7 @@ def get_album(album_id):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -853,18 +860,18 @@ def get_album(album_id):
         sql = """
         """
 
-        r = dictfetchall(cur,sql,(album_id,))
+        r = dictfetchall(cur, sql, (album_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
-        print("Unexpected error getting Albums with ID: "+album_id, sys.exc_info()[0])
+        print("Unexpected error getting Albums with ID: " + album_id, sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -878,7 +885,7 @@ def get_album_songs(album_id):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -893,18 +900,18 @@ def get_album_songs(album_id):
         sql = """
         """
 
-        r = dictfetchall(cur,sql,(album_id,))
+        r = dictfetchall(cur, sql, (album_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
-        print("Unexpected error getting Albums songs with ID: "+album_id, sys.exc_info()[0])
+        print("Unexpected error getting Albums songs with ID: " + album_id, sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -918,7 +925,7 @@ def get_album_genres(album_id):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -933,19 +940,20 @@ def get_album_genres(album_id):
         sql = """
         """
 
-        r = dictfetchall(cur,sql,(album_id,))
+        r = dictfetchall(cur, sql, (album_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
-        print("Unexpected error getting Albums genres with ID: "+album_id, sys.exc_info()[0])
+        print("Unexpected error getting Albums genres with ID: " + album_id, sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
+
 
 #####################################################
 #   Query (10)
@@ -965,7 +973,7 @@ def get_genre_songs(genre_id):
     Get all songs for a particular song_genre ID in your media server
     """
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -980,19 +988,20 @@ def get_genre_songs(genre_id):
         sql = """
         """
 
-        r = dictfetchall(cur,sql,(genre_id,))
+        r = dictfetchall(cur, sql, (genre_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
-        print("Unexpected error getting Songs with Genre ID: "+genre_id, sys.exc_info()[0])
+        print("Unexpected error getting Songs with Genre ID: " + genre_id, sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
+
 
 #####################################################
 #   Query (10)
@@ -1003,7 +1012,7 @@ def get_genre_podcasts(genre_id):
     Get all podcasts for a particular podcast_genre ID in your media server
     """
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -1018,19 +1027,20 @@ def get_genre_podcasts(genre_id):
         sql = """
         """
 
-        r = dictfetchall(cur,sql,(genre_id,))
+        r = dictfetchall(cur, sql, (genre_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
-        print("Unexpected error getting Podcasts with Genre ID: "+genre_id, sys.exc_info()[0])
+        print("Unexpected error getting Podcasts with Genre ID: " + genre_id, sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
+
 
 #####################################################
 #   Query (10)
@@ -1041,7 +1051,7 @@ def get_genre_movies_and_shows(genre_id):
     Get all movies and tv shows for a particular film_genre ID in your media server
     """
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -1056,20 +1066,19 @@ def get_genre_movies_and_shows(genre_id):
         sql = """
         """
 
-        r = dictfetchall(cur,sql,(genre_id,))
+        r = dictfetchall(cur, sql, (genre_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
-        print("Unexpected error getting Movies and tv shows with Genre ID: "+genre_id, sys.exc_info()[0])
+        print("Unexpected error getting Movies and tv shows with Genre ID: " + genre_id, sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
-
 
 
 #####################################################
@@ -1082,7 +1091,7 @@ def get_tvshow(tvshow_id):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -1097,18 +1106,18 @@ def get_tvshow(tvshow_id):
         sql = """
         """
 
-        r = dictfetchall(cur,sql,(tvshow_id,))
+        r = dictfetchall(cur, sql, (tvshow_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting All TV Shows:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -1122,7 +1131,7 @@ def get_all_tvshoweps_for_tvshow(tvshow_id):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -1137,18 +1146,18 @@ def get_all_tvshoweps_for_tvshow(tvshow_id):
         sql = """
         """
 
-        r = dictfetchall(cur,sql,(tvshow_id,))
+        r = dictfetchall(cur, sql, (tvshow_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting All TV Shows:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -1161,7 +1170,7 @@ def get_tvshowep(tvshowep_id):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -1172,18 +1181,18 @@ def get_tvshowep(tvshowep_id):
             on (te.media_id=temd.media_id)
         where te.media_id = %s"""
 
-        r = dictfetchall(cur,sql,(tvshowep_id,))
+        r = dictfetchall(cur, sql, (tvshowep_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting All TV Shows:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -1197,7 +1206,7 @@ def get_movie(movie_id):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -1208,18 +1217,18 @@ def get_movie(movie_id):
         on (m.movie_id=mmd.media_id)
         where m.movie_id=%s;"""
 
-        r = dictfetchall(cur,sql,(movie_id,))
+        r = dictfetchall(cur, sql, (movie_id,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting All Movies:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -1232,7 +1241,7 @@ def find_matchingtvshows(searchterm):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -1250,18 +1259,18 @@ def find_matchingtvshows(searchterm):
             where t.tvshow_id = tnew.tvshow_id and lower(tvshow_title) ~ lower(%s)
             order by t.tvshow_id;"""
 
-        r = dictfetchall(cur,sql,(searchterm,))
+        r = dictfetchall(cur, sql, (searchterm,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting All TV Shows:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
@@ -1275,7 +1284,7 @@ def find_matchingmovies(searchterm):
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -1291,31 +1300,30 @@ def find_matchingmovies(searchterm):
         from mediaserver.movie m
         where lower(m.movie_title) = lower(%s);"""
 
-        r = dictfetchall(cur,sql,(searchterm,))
+        r = dictfetchall(cur, sql, (searchterm,))
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting All TV Shows:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
-
 
 
 #####################################################
 #   Add a new Movie
 #####################################################
-def add_movie_to_db(title,release_year,description,storage_location,genre):
+def add_movie_to_db(title, release_year, description, storage_location, genre):
     """
     Add a new Movie to your media server
     """
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -1326,21 +1334,22 @@ def add_movie_to_db(title,release_year,description,storage_location,genre):
                 %s,%s,%s,%s,%s);
         """
 
-        cur.execute(sql,(storage_location,description,title,release_year,genre))
-        conn.commit()                   # Commit the transaction
+        cur.execute(sql, (storage_location, description, title, release_year, genre))
+        conn.commit()  # Commit the transaction
         r = cur.fetchone()
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error adding a movie:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
+
 
 #####################################################
 #   Query (8)
@@ -1361,8 +1370,6 @@ def add_song_to_db(song_params):
     return None
 
 
-
-
 #####################################################
 #   Get last Movie
 #####################################################
@@ -1372,7 +1379,7 @@ def get_last_movie():
     """
 
     conn = database_connect()
-    if(conn is None):
+    if (conn is None):
         return None
     cur = conn.cursor()
     try:
@@ -1380,18 +1387,18 @@ def get_last_movie():
         sql = """
         select max(movie_id) as movie_id from mediaserver.movie"""
 
-        r = dictfetchone(cur,sql)
+        r = dictfetchone(cur, sql)
         print("return val is:")
         print(r)
-        cur.close()                     # Close the cursor
-        conn.close()                    # Close the connection to the db
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
         return r
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error adding a movie:", sys.exc_info()[0])
         raise
-    cur.close()                     # Close the cursor
-    conn.close()                    # Close the connection to the db
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
     return None
 
 
