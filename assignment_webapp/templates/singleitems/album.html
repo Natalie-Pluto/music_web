@@ -22,35 +22,8 @@
                 {% endif %}
             {% endfor %}
             <br/>
-            <!-- TODO - Query (10)
+            <!--TODO - Query (10)
             You will have to modify this slightly to make each genre clickable
-            -->
-            <!--  Example of a table with clickable rows:
-            <table class="styled">
-                    <thead>
-                        <tr>
-                            <td>Column 1 Heading - Usually an ID </td>
-                            <td>Column 2 Heading</td>
-                                      .
-                                      .
-                                      .
-                            <td>Column n Heading</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for instance in some_input_array %}
-                        <tr class="clickable-tr" data-href="{{ url_for('single_item_target', target_id=instance.single_item_target_id)}}">
-                            <td style="text-align: center">{{ instance.single_item_target_id }}</td>
-                            <td>{{instance.item_corresponding_to_column_2}}</td>
-                                      .
-                                      .
-                                      .
-                            <td>{{instance.item_corresponding_to_column_n}}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-
-                </table>
             -->
             <h3> Genres </h3>
             {% for instance in album_genres %}

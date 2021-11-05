@@ -963,12 +963,13 @@ def get_album_genres(album_id):
         #############################################################################
         sql = """
         select
-            string_agg(distinct md.md_value, ',') as Genres
+            distinct md_value as songgenres
 	    from
            (mediaserver.song s natural join mediaserver.album_songs albs) as s
 		   join (mediaserver.AudioMedia natural join mediaserver.MediaItemMetaData) as audd
 		   on (s.song_id = audd.media_id)
-		   join mediaserver.metadata md using (md_id)
+		   join mediaserver.metadata md using (md_id) 
+		   natural join mediaserver.metadatatype
 
 	    where s.album_id =%s
         """

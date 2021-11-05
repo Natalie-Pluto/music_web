@@ -9,7 +9,7 @@ import warnings
 try:
     import builtins
 except ImportError:
-    import __builtin__ as builtins
+    import builtins as builtins
 
 
 PY2 = sys.version_info[0] == 2
