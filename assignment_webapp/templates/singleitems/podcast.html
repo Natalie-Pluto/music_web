@@ -75,8 +75,10 @@
                     </tbody>
 
                 </table>
-
-            </div>
+                </div>
+            {% else %}
+                <h2 class="title"> Invalid Podcast ID</h2>
+            {% endif %}
     </div>
 </div>
 {% include 'bottom.html'%}
