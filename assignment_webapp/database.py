@@ -688,7 +688,7 @@ def get_song_metadata(song_id):
         #############################################################################
 
         sql = """
-        select md_value,md_type_name
+        select md_value, md_type_name, md_id
 		from
 			mediaserver.MediaItemMetaData m natural join mediaserver.metadata
 											natural join mediaserver.metadatatype
@@ -963,7 +963,7 @@ def get_album_genres(album_id):
         #############################################################################
         sql = """
         select
-            distinct md_value as songgenres
+            distinct md_value as songgenres, md_id as genre_id
 	    from
            (mediaserver.song s natural join mediaserver.album_songs albs) as s
 		   join (mediaserver.AudioMedia natural join mediaserver.MediaItemMetaData) as audd
@@ -971,7 +971,7 @@ def get_album_genres(album_id):
 		   join mediaserver.metadata md using (md_id) 
 		   natural join mediaserver.metadatatype
 
-	    where s.album_id =%s
+	    where s.album_id =%s and md_type_id =1
         """
 
         r = dictfetchall(cur, sql, (album_id,))
@@ -1020,7 +1020,16 @@ def get_genre_songs(genre_id):
         # songs which belong to a particular genre_id                               #
         #############################################################################
         sql = """
-
+        select 
+			distinct s.song_id, s.song_title
+		from
+			(mediaserver.song s natural join mediaserver.album_songs albs) as s
+		   join (mediaserver.AudioMedia natural join mediaserver.MediaItemMetaData) as audd
+		   on (s.song_id = audd.media_id)
+		   join mediaserver.metadata md using (md_id) 
+		   natural join mediaserver.metadatatype
+		  
+		 where md_type_id =1 and md_id =%s
         """
 
         r = dictfetchall(cur, sql, (genre_id,))
@@ -1060,6 +1069,14 @@ def get_genre_podcasts(genre_id):
         # podcasts which belong to a particular genre_id                            #
         #############################################################################
         sql = """
+        select 
+			distinct po.podcast_id, po.podcast_title
+		from
+			(mediaserver.podcast po natural join mediaserver.PodcastEpisode)
+			natural join mediaserver.MediaItemMetaData join mediaserver.metadata md using (md_id) 
+		   	natural join mediaserver.metadatatype
+		  
+		 where md_type_id =6 and md_id =%s
         """
 
         r = dictfetchall(cur, sql, (genre_id,))
@@ -1110,6 +1127,44 @@ def get_genre_movies_and_shows(genre_id):
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting Movies and tv shows with Genre ID: " + genre_id, sys.exc_info()[0])
+        raise
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
+    return None
+
+#####################################################
+#   Query (10) - Additional
+#   Get genre type
+#####################################################
+def get_genre_type(genre_id):
+    """
+    Get genre type of the provided genre id
+    """
+    conn = database_connect()
+    if (conn is None):
+        return None
+    cur = conn.cursor()
+    try:
+        #########
+        # TODO  #
+        #########
+        sql = """
+        select
+		        md_type_name
+	        from
+		        mediaserver.metadata natural join mediaserver.metadatatype
+	        where md_id =%s
+        """
+
+        r = dictfetchall(cur, sql, (genre_id,))
+        print("return val is:")
+        print(r)
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
+        return r
+    except:
+        # If there were any errors, return a NULL row printing an error to the debug
+        print("Unexpected error getting Genre Type: " + genre_id, sys.exc_info()[0])
         raise
     cur.close()  # Close the cursor
     conn.close()  # Close the connection to the db

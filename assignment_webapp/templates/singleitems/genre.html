@@ -32,7 +32,25 @@
         <!-- First check should be a valid instance -->
         <!-- Second check should be what type of genre? -->
         {% if genre | length > 0 %}
-        
+            <h2 class="title"> {{genre[0].album_title}}</h2>
+            <hr/>
+            <h3> Artworks </h3>
+            {% for instance in album %}
+                {% if instance.md_type_name == 'artwork' %}
+                    <img src="{{instance.md_value}}" alt="image">
+                    <br/>© Spotify Public Domain 2019.
+                {% endif %}
+            {% endfor %}
+            <br/>
+            <h3> Descriptions </h3>
+            {% for instance in album %}
+                {% if instance.md_type_name == 'description' %}
+                    <div>
+                        {{instance.md_value}}
+                    </div>
+                {% endif %}
+            {% endfor %}
+            <br/>
         {% else %}
             <h2 class="title"> Invalid Genre ID</h2>
         {% endif %}

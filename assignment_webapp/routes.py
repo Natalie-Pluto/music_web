@@ -641,21 +641,45 @@ def single_genre(genre_id):
     #############################################################################
     # Fill in the Function below with to do all data handling for a genre       #
     #############################################################################
+    # Get the album plus associated metadata from the database
 
-    page['title'] = '' # Add the title
+    page['title'] = 'List of Items Under This Genre' # Add the title
 
     # Identify the type of genre - you may need to add a new function to database.py to do this
-
+    genre_type = None
+    genre_type = database.get_genre_type(genre_id)
     # Set up some variables to manage the returns from the database functions
     #   There are some function frameworks provided for you to do this.
+    film_genres = None
+    film_genres = database.get_genre_podcasts(genre_id)
+
+    song_genres = None
+    song_genres = database.get_genre_songs(genre_id)
+
+    podcast_genres = None
+    podcast_genres = database.get_genre_podcasts(genre_id)
 
     # Once retrieved, do some data integrity checks on the data
+    if genre_type == None:
+        genre_type = []
+
+    if film_genres == None:
+        film_genres = []
+
+    if song_genres == None:
+        song_genres = []
+
+    if podcast_genres == None:
+        podcast_genres = []
 
     # NOTE :: YOU WILL NEED TO MODIFY THIS TO PASS THE APPROPRIATE VARIABLES
     return render_template('singleitems/genre.html',
                            session=session,
                            page=page,
-                           user=user_details)
+                           user=user_details,
+                           film_genres=film_genres,
+                           song_genres=song_genres,
+                           podcast_genres=podcast_genres)
 
 
 #####################################################
