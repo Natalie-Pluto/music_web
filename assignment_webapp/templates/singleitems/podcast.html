@@ -75,44 +75,7 @@
                     </tbody>
 
                 </table>
-
-            </div>
-            {% else %}
-                <h2 class="title"> Invalid Podcast ID</h2>
-            {% endif %}
-    </div>
-</div>
-{% include 'bottom.html'%}    <h3>Episodes for this Podcast</h3>
-                <table class="styled">
-                    <thead>
-                        <tr>
-                            <td>Podcast Episode Media ID</td>
-                            <td>Podcast Episode Title</td>
-                            <td>Podcast Episode Length</td>
-                            <td>Podcast Episode URI</td>
-                            <td>Podcast Episode Published Date</td>
-
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Add a for loop to iterate over the episodes -->
-
-                        {% for p in podcast_eps %}
-                        <tr class="clickable-tr" data-href="{{ url_for('single_podcastep', media_id=p.media_id)}}">
-                            <td style="text-align: center">{{ p.media_id }}</td>
-                            <td>{{p.podcast_episode_title}}</td>
-                            <td>{{p.podcast_episode_length}}</td>
-                            <td>{{p.podcast_episode_uri}}</td>
-                            <td>{{p.podcast_episode_published_date}}</td>
-                        </tr>
-
-                        {% endfor %}
-
-                    </tbody>
-
-                </table>
-
-            </div>
+                </div>
             {% else %}
                 <h2 class="title"> Invalid Podcast ID</h2>
             {% endif %}
