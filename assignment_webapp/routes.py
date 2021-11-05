@@ -6,7 +6,7 @@ time a browser hits each of the paths. This serves as the interaction
 between the browser and the database while rendering the HTML templates
 to be displayed.
 
-You will have to make 
+You will have to make
 """
 
 # Importing the required packages
@@ -55,7 +55,7 @@ def index():
     # Data integrity checks
     if user_playlists == None:
         user_playlists = []
-    
+
     if user_subscribed_podcasts == None:
         user_subscribed_podcasts = []
 
@@ -414,7 +414,7 @@ def single_podcast(podcast_id):
     Can do this without a login
     """
     #########
-    # TODO  #  
+    # TODO  #
     #########
 
     #############################################################################
@@ -424,13 +424,18 @@ def single_podcast(podcast_id):
     page['title'] = '' # Add the title
 
     # Set up some variables to manage the returns from the database fucntions
-    
+    podcast = None
+    podcast = database.get_podcast(podcast_id)
+    pocast_eps = None
+    podcast_eps = database.get_all_podcasteps_for_podcast(podcast_id)
     # Once retrieved, do some data integrity checks on the data
 
     # NOTE :: YOU WILL NEED TO MODIFY THIS TO PASS THE APPROPRIATE VARIABLES
     return render_template('singleitems/podcast.html',
                            session=session,
                            page=page,
+                           podcast=podcast,
+                           podcast_eps=podcast_eps,
                            user=user_details)
 
 #####################################################
@@ -444,7 +449,7 @@ def single_podcastep(media_id):
     Can do this without a login
     """
     #########
-    # TODO  #  
+    # TODO  #
     #########
 
     #############################################################################
@@ -454,7 +459,7 @@ def single_podcastep(media_id):
     page['title'] = '' # Add the title
 
     # Set up some variables to manage the returns from the database fucntions
-    
+
     # Once retrieved, do some data integrity checks on the data
 
     # NOTE :: YOU WILL NEED TO MODIFY THIS TO PASS THE APPROPRIATE VARIABLES
@@ -630,7 +635,7 @@ def single_genre(genre_id):
     #     return redirect(url_for('login'))
 
     #########
-    # TODO  #  
+    # TODO  #
     #########
 
     #############################################################################
@@ -643,7 +648,7 @@ def single_genre(genre_id):
 
     # Set up some variables to manage the returns from the database functions
     #   There are some function frameworks provided for you to do this.
-    
+
     # Once retrieved, do some data integrity checks on the data
 
     # NOTE :: YOU WILL NEED TO MODIFY THIS TO PASS THE APPROPRIATE VARIABLES
@@ -710,7 +715,7 @@ def search_movies():
         return redirect(url_for('login'))
 
     #########
-    # TODO  #  
+    # TODO  #
     #########
 
     #############################################################################
@@ -729,7 +734,7 @@ def search_movies():
         movies = []
         page['bar'] = False
         flash("No matching movies found, please try again")
-    # Once verified, send the appropriate data to 
+    # Once verified, send the appropriate data to
     else:
         page['bar'] = True
         flash('Found '+str(len(movies))+' results!')
@@ -801,7 +806,7 @@ def add_movie():
         else:
             newdict['artwork'] = request.form['artwork']
             print("We have a value: ",newdict['artwork'])
-        
+
         print('newdict is:')
         print(newdict)
 
@@ -837,7 +842,7 @@ def add_song():
         return redirect(url_for('login'))
 
     #########
-    # TODO  #  
+    # TODO  #
     #########
 
     #############################################################################
@@ -846,7 +851,7 @@ def add_song():
 
     page['title'] = 'Song Creation' # Add the title
 
-    
+
     songs = None
     print("request form is:")
     newdict = {}
@@ -903,7 +908,7 @@ def add_song():
         else:
             newdict['artist_id'] = request.form['artist_id']
             print("We have a value: ",newdict['artist_id'])
-        
+
         print('newdict is:')
         print(newdict)
 
