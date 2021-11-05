@@ -526,7 +526,7 @@ def get_alltvshows():
         # Fill in the SQL below with a query to get all tv shows and episode counts #
         #############################################################################
         sql = """
-        select tvshow_id, tvshow_title, count(DISTINCT tvshow_episode_title)
+        select tvshow_id, tvshow_title, count(distinct tvshow_episode_title)
         from mediaserver.tvshow join mediaserver.TVEpisode Using (tvshow_id)
         group by tvshow_id
         """
@@ -733,12 +733,12 @@ def get_podcast(podcast_id):
         # including all metadata associated with it                                 #
         #############################################################################
         sql = """
-		SELECT *
-		FROM mediaserver.Podcast P
-			LEFT OUTER JOIN (
+		select *
+		from mediaserver.Podcast P
+			left outer join (
 				mediaserver.PodcastMetaData NATURAL JOIN mediaserver.MetaData NATURAL JOIN mediaserver.MetaDataType
 			) META ON (META.podcast_id = P.podcast_id)
-		WHERE P.podcast_id=%s
+		where P.podcast_id=%s
         """
 
         r = dictfetchall(cur, sql, (podcast_id,))
@@ -1133,6 +1133,12 @@ def get_tvshow(tvshow_id):
         # including all relevant metadata       #
         #############################################################################
         sql = """
+        select *
+        from mediaserver.TVShow T
+        left outer join(
+        media server.TVShowMetaData NATURAL JOIN mediaserver.MetaData NATURAL JOIN mediaserver.MetaDataType
+        ) META ON (META.tvshow_id = T.tvshow_id)
+        WHERE T.tvshow_id=%s
         """
 
         r = dictfetchall(cur, sql, (tvshow_id,))
