@@ -780,6 +780,11 @@ def get_all_podcasteps_for_podcast(podcast_id):
         #############################################################################
 
         sql = """
+        SELECT *
+            FROM mediaserver.Podcast P
+            LEFT OUTER JOIN mediaserver.PodcastEpisode PE ON (P.podcast_id = PE.podcast_id)
+            WHERE P.podcast_id=%s
+            ORDER BY PE.podcast_episode_published_date DESC;
         """
 
         r = dictfetchall(cur, sql, (podcast_id,))
