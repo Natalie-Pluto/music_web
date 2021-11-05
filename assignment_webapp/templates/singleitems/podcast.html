@@ -1,33 +1,36 @@
 {% include 'top.html' %}
 <div class="content">
     <div class="container details">
-        <!-- TODO Query 7
+        <!-- TODO Query (6)
         Display All Relevant Podcast Infromation including meta data
         Display All Relevant Podcast Episodes for this Podcast
+        -->
+        <!-- TODO - Query (10)
+        You will have to modify the above approach slightly to make each genre clickable
         -->
 
         {% if podcast | length > 0 %}
             <h2 class="title">[{{podcast[0].podcast_id}}] {{podcast[0].podcast_title}}</h2>
             <h3> Artworks </h3>
-            {% for instance in podcast %}
-                {% if instance.md_type_name == 'artwork' %}
-                    <img src="{{instance.md_value}}" alt="image" width="300" height="300">
+            {% for p in podcast %}
+                {% if p.md_type_name == 'artwork' %}
+                    <img src="{{p.md_value}}" alt="image" width="500" height="500">
                 {% endif %}
             {% endfor %}
 
-            {% for instance in podcast %}
-                {% if instance.md_type_name == 'copyright holder' %}
+            {% for p in podcast %}
+                {% if p.md_type_name == 'copyright holder' %}
                     <div>
-                        © {{instance.md_value}}
+                        © {{p.md_value}}
                     </div>
                 {% endif %}
             {% endfor %}
 
             <h3>Description</h3>
-            {% for instance in podcast %}
-                {% if instance.md_type_name == 'description' %}
+            {% for p in podcast %}
+                {% if p.md_type_name == 'description' %}
                     <div>
-                        {{instance.md_value}}
+                        {{p.md_value}}
                     </div>
                 {% endif %}
             {% endfor %}
@@ -42,40 +45,77 @@
                     {{podcast[0].podcast_last_updated}}
                 </div>
 
-            <!-- Podcast Episodes -->
-            <h3>Episodes for this Podcast</h3>
-            <table class="styled">
-                <thead>
-                    <tr>
-                        <td>Podcast Episode Media ID</td>
-                        <td>Podcast Episode Title</td>
-                        <td>Podcast Episode URI</td>
-                        <td>Podcast Episode Published Date</td>
-                        <td>Podcast Episode Length</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Add a for loop to iterate over the episodes -->
-                    {% for instance in podcast_eps %}
-                        <!-- <tr class="clickable-tr" data-href="{{ url_for('single_song', song_id=instance.song_id)}}">
+                <!-- Podcast Episodes -->
+                <h3>Episodes for this Podcast</h3>
+                <table class="styled">
+                    <thead>
+                        <tr>
+                            <td>Podcast Episode Media ID</td>
+                            <td>Podcast Episode Title</td>
+                            <td>Podcast Episode Length</td>
+                            <td>Podcast Episode URI</td>
+                            <td>Podcast Episode Published Date</td>
 
-                        </tr> -->
-                        <tr class="clickable-tr" data-href="{{ url_for('single_podcastep', media_id=instance.media_id)}}">
-                            <td style="text-align: center">{{ instance.media_id }}</td>
-                            <td>{{instance.podcast_episode_title}}</td>
-                            <td>{{instance.podcast_episode_uri}}</td>
-                            <td>{{instance.podcast_episode_published_date}}</td>
-                            <td>{{instance.podcast_episode_length}}</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Add a for loop to iterate over the episodes -->
+
+                        {% for p in podcast_eps %}
+                        <tr class="clickable-tr" data-href="{{ url_for('single_podcastep', media_id=p.media_id)}}">
+                            <td style="text-align: center">{{ p.media_id }}</td>
+                            <td>{{p.podcast_episode_title}}</td>
+                            <td>{{p.podcast_episode_length}}</td>
+                            <td>{{p.podcast_episode_uri}}</td>
+                            <td>{{p.podcast_episode_published_date}}</td>
                         </tr>
 
-                    {% endfor %}
-                </tbody>
+                        {% endfor %}
 
-            </table>
+                    </tbody>
+
+                </table>
+
             </div>
-        {% else %}
-            <h2 class="title"> Invalid Podcast ID</h2>
-        {% endif %}
+            {% else %}
+                <h2 class="title"> Invalid Podcast ID</h2>
+            {% endif %}
+    </div>
+</div>
+{% include 'bottom.html'%}    <h3>Episodes for this Podcast</h3>
+                <table class="styled">
+                    <thead>
+                        <tr>
+                            <td>Podcast Episode Media ID</td>
+                            <td>Podcast Episode Title</td>
+                            <td>Podcast Episode Length</td>
+                            <td>Podcast Episode URI</td>
+                            <td>Podcast Episode Published Date</td>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Add a for loop to iterate over the episodes -->
+
+                        {% for p in podcast_eps %}
+                        <tr class="clickable-tr" data-href="{{ url_for('single_podcastep', media_id=p.media_id)}}">
+                            <td style="text-align: center">{{ p.media_id }}</td>
+                            <td>{{p.podcast_episode_title}}</td>
+                            <td>{{p.podcast_episode_length}}</td>
+                            <td>{{p.podcast_episode_uri}}</td>
+                            <td>{{p.podcast_episode_published_date}}</td>
+                        </tr>
+
+                        {% endfor %}
+
+                    </tbody>
+
+                </table>
+
+            </div>
+            {% else %}
+                <h2 class="title"> Invalid Podcast ID</h2>
+            {% endif %}
     </div>
 </div>
 {% include 'bottom.html'%}
