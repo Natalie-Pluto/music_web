@@ -1100,9 +1100,9 @@ def get_genre_podcasts(genre_id):
 #   Query (10)
 #   Get all movies and tv shows for one film_genre
 #####################################################
-def get_genre_movies_and_shows(genre_id):
+def get_genre_movies(genre_id):
     """
-    Get all movies and tv shows for a particular film_genre ID in your media server
+    Get all movies for a particular film_genre ID in your media server
     """
     conn = database_connect()
     if (conn is None):
@@ -1115,9 +1115,15 @@ def get_genre_movies_and_shows(genre_id):
 
         #############################################################################
         # Fill in the SQL below with a query to get all information about all       #
-        # movies and tv shows which belong to a particular genre_id                 #
+        # movies which belong to a particular genre_id                              #
         #############################################################################
         sql = """
+        select m.movie_id, m.movie_title, md_id, case when md_type_name='film genre' Then 'Movie'
+										         end as item_type
+        from mediaserver.movie m left outer join
+            (mediaserver.mediaitemmetadata natural join mediaserver.metadata natural join mediaserver.MetaDataType) mmd
+            on (m.movie_id=mmd.media_id)
+        where md_type_id =2 and md_id=%s
         """
 
         r = dictfetchall(cur, sql, (genre_id,))
@@ -1133,6 +1139,48 @@ def get_genre_movies_and_shows(genre_id):
     cur.close()  # Close the cursor
     conn.close()  # Close the connection to the db
     return None
+
+def get_genre_tvshow(genre_id):
+    """
+    Get all tv shows for a particular film_genre ID in your media server
+    """
+    conn = database_connect()
+    if (conn is None):
+        return None
+    cur = conn.cursor()
+    try:
+        #########
+        # TODO  #
+        #########
+
+        #############################################################################
+        # Fill in the SQL below with a query to get all information about all       #
+        # tv shows which belong to a particular genre_id                            #
+        #############################################################################
+
+        sql = """
+        select T.tvshow_id, T.tvshow_title, md_id, case when md_type_name='film genre' Then 'Tv Show'
+										end as item_type
+            from mediaserver.TVShow T
+                left outer join(
+                mediaserver.TVShowMetaData NATURAL JOIN mediaserver.MetaData NATURAL JOIN mediaserver.MetaDataType
+                ) META ON (META.tvshow_id = T.tvshow_id)
+            WHERE md_type_id =2 and md_id=%s
+        """
+        r = dictfetchall(cur, sql, (genre_id,))
+        print("return val is:")
+        print(r)
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
+        return r
+    except:
+        # If there were any errors, return a NULL row printing an error to the debug
+        print("Unexpected error getting Movies and tv shows with Genre ID: " + genre_id, sys.exc_info()[0])
+        raise
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
+    return None
+
 
 #####################################################
 #   Query (10) - Additional
@@ -1199,7 +1247,7 @@ def get_tvshow(tvshow_id):
         select *
         from mediaserver.TVShow T
         left outer join(
-        media server.TVShowMetaData NATURAL JOIN mediaserver.MetaData NATURAL JOIN mediaserver.MetaDataType
+        mediaserver.TVShowMetaData NATURAL JOIN mediaserver.MetaData NATURAL JOIN mediaserver.MetaDataType
         ) META ON (META.tvshow_id = T.tvshow_id)
         WHERE T.tvshow_id=%s
         """
