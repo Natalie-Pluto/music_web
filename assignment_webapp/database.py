@@ -968,7 +968,7 @@ def get_album_genres(album_id):
            (mediaserver.song s natural join mediaserver.album_songs albs) as s
 		   join (mediaserver.AudioMedia natural join mediaserver.MediaItemMetaData) as audd
 		   on (s.song_id = audd.media_id)
-		   join mediaserver.metadata md using (md_id) 
+		   join mediaserver.metadata md using (md_id)
 		   natural join mediaserver.metadatatype
 
 	    where s.album_id =%s and md_type_id =1
@@ -1020,16 +1020,16 @@ def get_genre_songs(genre_id):
         # songs which belong to a particular genre_id                               #
         #############################################################################
         sql = """
-        select 
+        select
 			distinct s.song_id, s.song_title, md_id, md_value, case when md_type_name='song genre' Then 'Song'
 													 end as item_type
 		from
 			(mediaserver.song s natural join mediaserver.album_songs albs) as s
 		   join (mediaserver.AudioMedia natural join mediaserver.MediaItemMetaData) as audd
 		   on (s.song_id = audd.media_id)
-		   join mediaserver.metadata md using (md_id) 
+		   join mediaserver.metadata md using (md_id)
 		   natural join mediaserver.metadatatype
-		  
+
 		 where md_type_id =1 and md_id =%s
         """
 
@@ -1070,14 +1070,14 @@ def get_genre_podcasts(genre_id):
         # podcasts which belong to a particular genre_id                            #
         #############################################################################
         sql = """
-        select 
+        select
 			distinct po.podcast_id, po.podcast_title, md_id, case when md_type_name='podcast genre' Then 'Podcast'
 													        end as item_type
 		from
 			(mediaserver.podcast po natural join mediaserver.PodcastEpisode)
-			natural join mediaserver.MediaItemMetaData join mediaserver.metadata md using (md_id) 
+			natural join mediaserver.MediaItemMetaData join mediaserver.metadata md using (md_id)
 		   	natural join mediaserver.metadatatype
-		  
+
 		 where md_type_id =6 and md_id =%s
         """
 
@@ -1242,6 +1242,10 @@ def get_all_tvshoweps_for_tvshow(tvshow_id):
         # tv episodes in a tv show                                                  #
         #############################################################################
         sql = """
+        select TVE.media_id, TVE.tvshow_episode_title, TVE.season, TVE.episode, TVE.air_date
+        from mediaserver.tvshow T LEFT OUTER JOIN media server.TVEpisode TVE ON(T.tvshow_id = TVE.tvshow_id)
+        where T.tvshow_Id = %s
+        order by TVE.season, episode
         """
 
         r = dictfetchall(cur, sql, (tvshow_id,))

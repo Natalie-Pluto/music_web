@@ -40,6 +40,15 @@
                     <a href="{{podcast[0].podcast_uri}}">{{podcast[0].podcast_uri}}</a>
                 </div>
 
+            <h3>Podcast Genres</h3>
+            {% for p in podcast_genres %}
+                <a href="{{ url_for('single_genre', genre_id=instance.genre_id)}}">
+                    <div>
+                        {{ p.podcastepgenres}}
+                    </div>
+                </a>
+            {% endfor %}
+
             <h3>Last Updated</h3>
                 <div>
                     {{podcast[0].podcast_last_updated}}
@@ -55,7 +64,6 @@
                             <td>Podcast Episode Length</td>
                             <td>Podcast Episode URI</td>
                             <td>Podcast Episode Published Date</td>
-
                         </tr>
                     </thead>
                     <tbody>
