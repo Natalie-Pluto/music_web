@@ -47,8 +47,8 @@
                                     </thead>
                                     <tbody>
                                         {% for instance in song_genres %}
-                                        <tr class="clickable-tr" data-href="{{ url_for('single_song', song_id=instance.song_id) }}">
-                                            <td style="text-align: center">{{ instance.song_id }}</td>
+                                        <tr class="clickable-tr" data-href="{{ url_for('single_song', song_id=instance.song_id)}}">
+                                            <td>{{instance.song_id }}</td>
                                             <td>{{instance.song_title}}</td>
                                             <td>{{instance.item_type}}</td>
                                         </tr>
@@ -67,12 +67,40 @@
                                     </thead>
                                     <tbody>
                                         {% for instance in podcast_genres %}
-                                        <tr class="clickable-tr" data-href="{{ url_for('single_genre', genre_id=instance.md_id)}}">
-                                            <td style="text-align: center">{{ instance.podcast_id }}</td>
+                                        <tr class="clickable-tr" data-href="{{ url_for('single_podcast', podcast_id=instance.podcast_id)}}">
+                                            <td>{{instance.podcast_id }}</td>
                                             <td>{{instance.podcast_title}}</td>
                                             <td>{{instance.item_type}}</td>
                                         </tr>
                                         {% endfor %}
+                                    </tbody>
+                            </table>
+                {% endif %}
+                {% if instance.genre_type == 'film genre' %}
+                            <table class="styled">
+                                    <thead>
+                                        <tr>
+                                            <td>Item ID</td>
+                                            <td>Item Title</td>
+                                            <td>Item Type</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for instance in tvshow_genres %}
+                                        <tr class="clickable-tr" data-href="{{ url_for('single_tvshow', tvshow_id=instance.tvshow)}}">
+                                            <td>{{instance.tvshow_id}}</td>
+                                            <td>{{instance.tvshow_title}}</td>
+                                            <td>{{instance.item_type}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% for instance in movie_genres %}
+                                        <tr class="clickable-tr" data-href="{{ url_for('single_movie', movie_id=instance.movie_id)}}">
+                                            <td>{{instance.movie_id}}</td>
+                                            <td>{{instance.movie_title}}</td>
+                                            <td>{{instance.item_type}}</td>
+                                        </tr>
+                                        {% endfor %}
+
                                     </tbody>
                             </table>
                 {% endif %}
