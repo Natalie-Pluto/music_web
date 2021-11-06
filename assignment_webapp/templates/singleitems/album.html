@@ -25,16 +25,17 @@
             <!--TODO - Query (10)
             You will have to modify this slightly to make each genre clickable
             -->
-            <h3> Genres </h3>
-                <tbody>
-                    {% for instance in album_genres %}
-                    <tr class="clickable-tr" data-href="{{ url_for('single_genre', genre_id=instance.genre_id)}}">
-                        <div>
-                            {{instance.songgenres}}
-                        </div>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+            <div>
+                <h3> Genres </h3>
+                        {% for instance in album_genres %}
+                            <a href="{{ url_for('single_genre', genre_id=instance.genre_id)}}">
+                                <div>
+                                {{ instance.songgenres}}
+                                </div>
+                            </a>
+                        {% endfor %}
+            </div>
+
             <div>
                 <!-- All Songs -->
                 <table class="styled">

@@ -27,18 +27,17 @@
             <!-- TODO - Query 10
             You will have to modify the approach below slightly to make each genre clickable
             -->
+
             <h3> Genres </h3>
-            <tbody>
-                {% for instance in songmetadata %}
-                    {% if instance.md_type_name == 'song genre' %}
-                        <tr class="clickable-tr" data-href="{{ url_for('single_genre', genre_id=instance.md_id)}}">
-                            <div>
-                                {{instance.md_value}}
-                            </div>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            </tbody>
+            {% for instance in songmetadata %}
+                {% if instance.md_type_name == 'song genre' %}
+                    <a href="{{ url_for('single_genre', genre_id=instance.md_id)}}">
+                         <div>
+                                 {{instance.md_value}}
+                         </div>
+                    </a>
+                {% endif %}
+            {% endfor %}
         {% else %}
             <h2 class="title"> Invalid Song ID</h2>
         {% endif %}

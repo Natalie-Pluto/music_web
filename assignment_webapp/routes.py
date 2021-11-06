@@ -646,12 +646,12 @@ def single_genre(genre_id):
     page['title'] = 'List of Items Under This Genre' # Add the title
 
     # Identify the type of genre - you may need to add a new function to database.py to do this
-    genre_type = None
-    genre_type = database.get_genre_type(genre_id)
+    genre_types = None
+    genre_types = database.get_genre_type(genre_id)
     # Set up some variables to manage the returns from the database functions
     #   There are some function frameworks provided for you to do this.
-    film_genres = None
-    film_genres = database.get_genre_podcasts(genre_id)
+    #film_genres = None
+    #film_genres = database.get_genre_movies_and_shows(genre_id)
 
     song_genres = None
     song_genres = database.get_genre_songs(genre_id)
@@ -660,11 +660,11 @@ def single_genre(genre_id):
     podcast_genres = database.get_genre_podcasts(genre_id)
 
     # Once retrieved, do some data integrity checks on the data
-    if genre_type == None:
-        genre_type = []
+    if genre_types == None:
+        genre_types = []
 
-    if film_genres == None:
-        film_genres = []
+    #if film_genres == None:
+     #   film_genres = []
 
     if song_genres == None:
         song_genres = []
@@ -677,7 +677,8 @@ def single_genre(genre_id):
                            session=session,
                            page=page,
                            user=user_details,
-                           film_genres=film_genres,
+                           genre_types=genre_types,
+                           #film_genres=film_genres,
                            song_genres=song_genres,
                            podcast_genres=podcast_genres)
 

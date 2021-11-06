@@ -1021,7 +1021,8 @@ def get_genre_songs(genre_id):
         #############################################################################
         sql = """
         select 
-			distinct s.song_id, s.song_title
+			distinct s.song_id, s.song_title, md_id, md_value, case when md_type_name='song genre' Then 'Song'
+													 end as item_type
 		from
 			(mediaserver.song s natural join mediaserver.album_songs albs) as s
 		   join (mediaserver.AudioMedia natural join mediaserver.MediaItemMetaData) as audd
@@ -1070,7 +1071,8 @@ def get_genre_podcasts(genre_id):
         #############################################################################
         sql = """
         select 
-			distinct po.podcast_id, po.podcast_title
+			distinct po.podcast_id, po.podcast_title, md_id, case when md_type_name='podcast genre' Then 'Podcast'
+													        end as item_type
 		from
 			(mediaserver.podcast po natural join mediaserver.PodcastEpisode)
 			natural join mediaserver.MediaItemMetaData join mediaserver.metadata md using (md_id) 
@@ -1150,7 +1152,7 @@ def get_genre_type(genre_id):
         #########
         sql = """
         select
-		        md_type_name
+		        md_type_name as genre_type, md_value
 	        from
 		        mediaserver.metadata natural join mediaserver.metadatatype
 	        where md_id =%s

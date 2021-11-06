@@ -31,23 +31,50 @@
         <!-- TODO Query (10) -->
         <!-- First check should be a valid instance -->
         <!-- Second check should be what type of genre? -->
-        {% if genre | length > 0 %}
-            <h2 class="title"> {{genre[0].album_title}}</h2>
+        {% if genre_types | length > 0 %}
+            <h2 class="title"> {{genre_types[0].md_value}}</h2>
             <hr/>
-            <h3> Artworks </h3>
-            {% for instance in album %}
-                {% if instance.md_type_name == 'artwork' %}
-                    <img src="{{instance.md_value}}" alt="image">
-                    <br/>© Spotify Public Domain 2019.
+            <h3> List of Items </h3>
+            {% for instance in genre_types %}
+                {% if instance.genre_type == 'song genre' %}
+                        <table class="styled">
+                                    <thead>
+                                        <tr>
+                                            <td>Item ID</td>
+                                            <td>Item Title</td>
+                                            <td>Item Type</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for instance in song_genres %}
+                                        <tr class="clickable-tr" data-href="{{ url_for('single_song', song_id=instance.song_id) }}">
+                                            <td style="text-align: center">{{ instance.song_id }}</td>
+                                            <td>{{instance.song_title}}</td>
+                                            <td>{{instance.item_type}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                            </table>
                 {% endif %}
-            {% endfor %}
-            <br/>
-            <h3> Descriptions </h3>
-            {% for instance in album %}
-                {% if instance.md_type_name == 'description' %}
-                    <div>
-                        {{instance.md_value}}
-                    </div>
+                {% if instance.genre_type == 'podcast genre' %}
+                        <table class="styled">
+                                    <thead>
+                                        <tr>
+                                            <td>Item ID</td>
+                                            <td>Item Title</td>
+                                            <td>Item Type</td>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for instance in podcast_genres %}
+                                        <tr class="clickable-tr" data-href="{{ url_for('single_genre', genre_id=instance.md_id)}}">
+                                            <td style="text-align: center">{{ instance.podcast_id }}</td>
+                                            <td>{{instance.podcast_title}}</td>
+                                            <td>{{instance.item_type}}</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                            </table>
                 {% endif %}
             {% endfor %}
             <br/>
