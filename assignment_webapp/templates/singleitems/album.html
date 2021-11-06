@@ -30,7 +30,7 @@
                         {% for instance in album_genres %}
                             <a href="{{ url_for('single_genre', genre_id=instance.genre_id)}}">
                                 <div>
-                                {{ instance.songgenres}}
+                                {{instance.songgenres}}
                                 </div>
                             </a>
                         {% endfor %}

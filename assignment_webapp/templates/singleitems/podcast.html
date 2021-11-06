@@ -40,14 +40,18 @@
                     <a href="{{podcast[0].podcast_uri}}">{{podcast[0].podcast_uri}}</a>
                 </div>
 
-            <h3>Podcast Genres</h3>
-            {% for p in podcast_genres %}
-                <a href="{{ url_for('single_genre', genre_id=instance.genre_id)}}">
-                    <div>
-                        {{ p.podcastepgenres}}
-                    </div>
-                </a>
-            {% endfor %}
+            <div>
+                <h3>Podcast Genres</h3>
+                    {% for instance in podcast %}
+                        {% if instance.md_type_name == 'podcast genre' %}
+                            <a href="{{ url_for('single_genre', genre_id=instance.md_id)}}">
+                                <div>
+                                    {{instance.md_value}}
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+            </div>
 
             <h3>Last Updated</h3>
                 <div>

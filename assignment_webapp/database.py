@@ -1072,12 +1072,12 @@ def get_genre_podcasts(genre_id):
         sql = """
         select
 			distinct po.podcast_id, po.podcast_title, md_id, case when md_type_name='podcast genre' Then 'Podcast'
-													        end as item_type
+													         end as item_type
 		from
-			(mediaserver.podcast po natural join mediaserver.PodcastEpisode)
-			natural join mediaserver.MediaItemMetaData join mediaserver.metadata md using (md_id)
-		   	natural join mediaserver.metadatatype
-
+			mediaserver.podcast po 
+				left outer join (
+				mediaserver.PodcastMetaData NATURAL JOIN mediaserver.MetaData NATURAL JOIN mediaserver.MetaDataType
+			) META ON (META.podcast_id = po.podcast_id)
 		 where md_type_id =6 and md_id =%s
         """
 
