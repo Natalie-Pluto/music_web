@@ -87,7 +87,7 @@
                                     </thead>
                                     <tbody>
                                         {% for instance in tvshow_genres %}
-                                        <tr class="clickable-tr" data-href="{{ url_for('single_tvshow', tvshow_id=instance.tvshow)}}">
+                                        <tr class="clickable-tr" data-href="{{ url_for('single_tvshow', tvshow_id=instance.tvshow_id)}}">
                                             <td>{{instance.tvshow_id}}</td>
                                             <td>{{instance.tvshow_title}}</td>
                                             <td>{{instance.item_type}}</td>
