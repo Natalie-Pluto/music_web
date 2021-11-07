@@ -824,7 +824,14 @@ def get_podcastep(podcastep_id):
         # Fill in the SQL below with a query to get all information about a         #
         # podcast episodes and it's associated metadata                             #
         #############################################################################
-        sql = """
+        sql = """ 
+        SELECT *
+        FROM mediaserver.PodcastEpisode pde
+            JOIN mediaserver.MediaItemMetaData USING (media_id)
+            JOIN mediaserver.MetaData USING (md_id)
+            JOIN mediaserver.MetaDataType USING (md_type_id)
+
+        WHERE pde.media_id = %s;
         """
 
         r = dictfetchall(cur, sql, (podcastep_id,))
@@ -836,6 +843,49 @@ def get_podcastep(podcastep_id):
     except:
         # If there were any errors, return a NULL row printing an error to the debug
         print("Unexpected error getting Podcast Episode with ID: " + podcastep_id, sys.exc_info()[0])
+        raise
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
+    return None
+
+def get_podcastep_related_metadata(podcastep_id):
+    """
+    Get a podcast ep metadata that is related to its podcast
+    """
+
+    conn = database_connect()
+    if (conn is None):
+        return None
+    cur = conn.cursor()
+    try:
+        #########
+        # TODO  #
+        #########
+
+        #############################################################################
+        # Fill in the SQL below with a query to get all information about a         #
+        # podcast episodes and it's associated metadata                             #
+        #############################################################################
+        sql = """ 
+            
+        SELECT M2.md_id, M2.md_value, MDT.md_type_name
+            FROM mediaserver.PodcastEpisode pde
+                JOIN mediaserver.PodcastMetaData USING(podcast_id)
+                JOIN mediaserver.MetaData M2 USING (md_id)
+                JOIN mediaserver.MetaDataType MDT USING (md_type_id)
+
+            WHERE pde.media_id = %s;
+        """
+
+        r = dictfetchall(cur, sql, (podcastep_id,))
+        print("return val is:")
+        print(r)
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
+        return r
+    except:
+        # If there were any errors, return a NULL row printing an error to the debug
+        print("Unexpected error getting Podcast Episode related meta data with ID: " + podcastep_id, sys.exc_info()[0])
         raise
     cur.close()  # Close the cursor
     conn.close()  # Close the connection to the db
@@ -1078,7 +1128,7 @@ def get_genre_podcasts(genre_id):
 				left outer join (
 				mediaserver.PodcastMetaData NATURAL JOIN mediaserver.MetaData NATURAL JOIN mediaserver.MetaDataType
 			) META ON (META.podcast_id = po.podcast_id)
-		 where md_type_id =6 and md_id =%s
+		 where md_type_id = 6 and md_id = %s
         """
 
         r = dictfetchall(cur, sql, (genre_id,))

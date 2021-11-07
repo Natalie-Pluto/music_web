@@ -417,7 +417,7 @@ def single_podcast(podcast_id):
     # Set up some variables to manage the returns from the database fucntions
     podcast = None
     podcast = database.get_podcast(podcast_id)
-    pocast_eps = None
+    podcast_eps = None
     podcast_eps = database.get_all_podcasteps_for_podcast(podcast_id)
     # Once retrieved, do some data integrity checks on the data
 
@@ -448,9 +448,14 @@ def single_podcastep(media_id):
     # Fill in the Function below with to do all data handling for a podcast ep  #
     #############################################################################
 
-    page['title'] = ''  # Add the title
+    page['title'] = 'List Podcast Episode'  # Add the title
 
     # Set up some variables to manage the returns from the database fucntions
+    podcast_ep = None
+    podcast_ep = database.get_podcastep(media_id)
+    podcast_ep_related = database.get_podcastep_related_metadata(media_id)
+    if podcast_ep == None:
+        podcast_ep = []
 
     # Once retrieved, do some data integrity checks on the data
 
@@ -458,7 +463,9 @@ def single_podcastep(media_id):
     return render_template('singleitems/podcastep.html',
                            session=session,
                            page=page,
-                           user=user_details)
+                           user=user_details,
+                           podcast_ep = podcast_ep,
+                           podcast_ep_related = podcast_ep_related)
 
 
 #####################################################
