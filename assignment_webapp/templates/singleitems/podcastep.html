@@ -43,8 +43,11 @@
             <h3> Genres </h3>
                 {% for instance in podcast_ep_related %}
                     {% if instance.md_type_name == 'podcast genre' %}
-                        {{instance.md_value}}
-                        <br />
+                        <a href="{{ url_for('single_genre', genre_id=instance.md_id)}}">
+                                <div>
+                                    {{instance.md_value}}
+                                </div>
+                        </a>
                     {% endif %}
                 {% endfor %}
         {% endif %}
