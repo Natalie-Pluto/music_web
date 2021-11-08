@@ -963,8 +963,15 @@ def add_song():
                                artists = artists)
 
 
+#####################################################
+#####################################################
+####    New Functionality
+#####################################################
+#####################################################
 
-
+#####################################################
+#   Fuzzy Search
+#####################################################
 prev_result = None
 @app.route('/search/fuzzy_search', methods=['POST', 'GET'])
 def fuzzy_search():
@@ -995,4 +1002,28 @@ def fuzzy_search():
                 print("Nothing to match")
                 return "Nothing to Match"
 
-    
+#####################################################
+#   Update User Information
+#####################################################
+@app.route('/update', methods=['POST', 'GET'])
+def updateUserInfo():
+    """
+    allows for the user's changing of their
+    - password
+    - email
+    - phone number
+    - social
+    """
+
+    # Check if the user is logged in, if not: back to login.
+    if ('logged_in' not in session or not session['logged_in']):
+        return redirect(url_for('login'))
+
+    page['title'] = 'Update User Information'
+
+    if (request.method == 'POST'):
+        database.change_password(user_details['username'],request.form['newPassword']))
+        database.change_email(user_details['username'],request.form['newEmail']))
+        database.change_phone(user_details['username'],request.form['newPhone']))
+        database.change_social(user_details['username'],request.form['newSocial']))
+        redirect(url_for('login'))    
