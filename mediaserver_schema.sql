@@ -377,3 +377,70 @@ $$
     END;
 $$
 LANGUAGE plpgsql;
+
+										 -- Change password
+CREATE OR REPLACE FUNCTION mediaserver.changePassword(
+    user VARCHAR(50),
+    pass VARCHAR(72))
+RETURNS void AS
+$$
+    DECLARE
+
+    BEGIN
+		UPDATE mediaserver.UserAccount
+		SET password=pass
+		WHERE username=user;
+    END;
+$$
+LANGUAGE plpgsql;
+
+-- Change email
+CREATE OR REPLACE FUNCTION mediaserver.changeEmail(
+    user VARCHAR(50),
+    email VARCHAR(100))
+RETURNS void AS
+$$
+    DECLARE
+
+    BEGIN
+		UPDATE mediaserver.ContactMethod
+		SET contact_type_value=email
+		WHERE username=user AND contact_type_id=1;
+    END;
+$$
+LANGUAGE plpgsql;
+
+-- Change phone
+CREATE OR REPLACE FUNCTION mediaserver.changePhone(
+    user VARCHAR(50),
+    phone VARCHAR(100))
+RETURNS void AS
+$$
+    DECLARE
+
+    BEGIN
+		UPDATE mediaserver.ContactMethod
+		SET contact_type_value=phone
+		WHERE username=user AND contact_type_id=2;
+    END;
+$$
+LANGUAGE plpgsql;
+
+-- Change social
+CREATE OR REPLACE FUNCTION mediaserver.changeEmail(
+    user VARCHAR(50),
+    social VARCHAR(100))
+RETURNS void AS
+$$
+    DECLARE
+
+    BEGIN
+		IF EXISTS(SELECT * FROM mediaserver.ContactMethod WHERE username=user AND contact_type_id=3)
+			UPDATE mediaserver.ContactMethod
+			SET contact_type_value=social
+			WHERE username=user AND contact_type_id=3;
+		ELSE
+			INSERT INTO mediaserver.ContactMethod VALUES(lower(user), 3, social);
+    END;
+$$
+LANGUAGE plpgsql;
