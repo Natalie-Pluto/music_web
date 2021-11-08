@@ -945,7 +945,7 @@ def add_song():
         songs = database.add_song_to_db(newdict['storage_location'], newdict['description'], newdict['song_title'],
                                         newdict['song_length'], newdict['song_genre'], newdict['artist_id'],
                                         newdict['artwork'])
-
+        
         max_song_id = database.get_last_song()[0]['song_id']
         print(songs)
         if songs is not None:
@@ -954,7 +954,45 @@ def add_song():
         # ideally this would redirect to your newly added song
         return single_song(max_song_id)
     else:
+        artists = None
+        artists = database.get_allartists()
         return render_template('createitems/createsong.html',
                                session=session,
                                page=page,
-                               user=user_details)
+                               user=user_details,
+                               artists = artists)
+
+
+
+
+prev_result = None
+@app.route('/search/fuzzy_search', methods=['POST', 'GET'])
+def fuzzy_search():
+    """
+    Search all the movies in your media server
+    """
+    # Check if the user is logged in, if not: back to login.
+    if ('logged_in' not in session or not session['logged_in']):
+        return redirect(url_for('login'))
+    
+    global prev_result
+    input = None
+    if request.method == "POST":
+        input = request.get_json()
+        if input is not None:
+            fuzzy_matches = database.movie_fuzzy_search(input)
+            try:
+                result = fuzzy_matches[0]
+                if not prev_result or result['movie_title'] != prev_result['movie_title']:
+                    print(result)
+                    print(prev_result)
+                    prev_result = dict(result)
+                    return jsonify(result)
+                else:
+                    print("Nothing to match")
+                    return "Nothing to Match"
+            except:
+                print("Nothing to match")
+                return "Nothing to Match"
+
+    
