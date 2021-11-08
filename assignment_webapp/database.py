@@ -326,10 +326,10 @@ def user_in_progress_items(username):
         ###################################################################################
 
         sql = """
-        SELECT m.media_id, umc.play_count AS playcount, umc.progress,umc.lastviewed,m.storage_location
-        FROM mediaserver.MediaItem m JOIN mediaserver.UserMediaConsumption umc USING(media_id)
-        WHERE umc.progress <> 100.00 and umc.progress <> and umc.username = %s
-        ORDER BY umc.lastviewed
+         SELECT m.media_id, umc.play_count AS playcount, umc.progress,umc.lastviewed,m.storage_location
+            FROM mediaserver.MediaItem m JOIN mediaserver.UserMediaConsumption umc USING(media_id)
+            WHERE umc.username = %s AND umc.progress <> 100.00
+            ORDER BY umc.lastviewed DESC
         """
 
         r = dictfetchall(cur, sql, (username,))
@@ -1654,6 +1654,62 @@ def get_last_movie():
     cur.close()  # Close the cursor
     conn.close()  # Close the connection to the db
     return None
+
+#####################################################
+#   Fuzzy Search for movie
+#####################################################
+conn_fuzzy = database_connect()
+
+def movie_fuzzy_search(input):
+    """
+    Get all the fuzzy matching Movies in your media server
+    """
+    global conn_fuzzy
+    if (conn_fuzzy is None):
+        conn_fuzzy = database_connect()
+    cur = conn_fuzzy.cursor()
+    try:
+        #########
+        # TODO  #
+        #########
+
+        #############################################################################
+        # Fill in the SQL below with a query to get all fuzzy match movies.                                      
+        #############################################################################
+        sql = """
+                SELECT movie_title
+                FROM mediaserver.movie
+                WHERE difference(%s, movie_title) >= 3
+                ORDER BY difference(%s, movie_title)
+                LIMIT 1
+                """
+
+        r = dictfetchall(cur, sql, (input,input,))
+        print("return val is:")
+        print(r)
+        cur.close()  # Close the cursor
+        #conn.close()  # Close the connection to the db
+        return r
+    except:
+        # If there were any errors, return a NULL row printing an error to the debug
+        conn_fuzzy = database_connect().close()  # Close the connection to the db
+        cur.close()  # Close the cursor
+        print("Unexpected error getting fuzzy matches for movie", sys.exc_info()[0])
+        raise
+        return None
+        
+        
+        
+        
+
+
+
+
+
+
+
+
+
 
 
 #  FOR MARKING PURPOSES ONLY
