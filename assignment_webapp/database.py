@@ -1698,7 +1698,129 @@ def movie_fuzzy_search(input):
         raise
         return None
         
-        
+#####################################################
+#   Update user information
+#   Change password
+#####################################################
+def change_password(username, newPassword):
+    """
+    Change the password for a user
+    """
+    conn = database_connect()
+    if (conn is None):
+        return None
+    cur = conn.cursor()
+    try:
+        # Try executing the SQL and get from the database
+        sql = """
+        mediaserver.changePassword(%s,%s);
+        """
+        cur.execute(sql,(username,newPassword))
+        conn.commit()                   # Commit the transaction
+        cur.close()                     # Close the cursor
+        conn.close()                    # Close the connection to the db
+        return None
+    except:
+        # If there were any errors, return a NULL row printing an error to the debug
+        print("Unexpected error changing password:", sys.exc_info()[0])
+        raise
+    
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
+    return None
+
+#####################################################
+#   Update user information
+#   Change email
+#####################################################
+def change_email(username, newEmail):
+    """
+    Change the email for a user
+    """
+    conn = database_connect()
+    if (conn is None):
+        return None
+    cur = conn.cursor()
+    try:
+        # Try executing the SQL and get from the database
+        sql = """
+        mediaserver.changeEmail(%s,%s);
+        """
+        cur.execute(sql,(username,newEmail))
+        conn.commit()                   # Commit the transaction
+        cur.close()                     # Close the cursor
+        conn.close()                    # Close the connection to the db
+        return None
+    except:
+        # If there were any errors, return a NULL row printing an error to the debug
+        print("Unexpected error changing email:", sys.exc_info()[0])
+        raise
+    
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
+    return None
+
+#####################################################
+#   Update user information
+#   Change phone number
+#####################################################
+def change_phone(username, newPhone):
+    """
+    Change the phone for a user
+    """
+    conn = database_connect()
+    if (conn is None):
+        return None
+    cur = conn.cursor()
+    try:
+        # Try executing the SQL and get from the database
+        sql = """
+        mediaserver.changePhone(%s,%s);
+        """
+        cur.execute(sql,(username,newPhone))
+        conn.commit()                   # Commit the transaction
+        cur.close()                     # Close the cursor
+        conn.close()                    # Close the connection to the db
+        return None
+    except:
+        # If there were any errors, return a NULL row printing an error to the debug
+        print("Unexpected error changing phone:", sys.exc_info()[0])
+        raise
+    
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
+    return None
+
+#####################################################
+#   Update user information
+#   Change social
+#####################################################
+def change_social(username, newSocial):
+    """
+    Change the social for a user
+    """
+    conn = database_connect()
+    if (conn is None):
+        return None
+    cur = conn.cursor()
+    try:
+        # Try executing the SQL and get from the database
+        sql = """
+        mediaserver.changeSocial(%s,%s);
+        """
+        cur.execute(sql,(username,newSocial))
+        conn.commit()                   # Commit the transaction
+        cur.close()                     # Close the cursor
+        conn.close()                    # Close the connection to the db
+        return None
+    except:
+        # If there were any errors, return a NULL row printing an error to the debug
+        print("Unexpected error changing social:", sys.exc_info()[0])
+        raise
+    
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
+    return None        
         
         
 
