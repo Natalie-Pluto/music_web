@@ -1022,8 +1022,8 @@ def updateUserInfo():
     page['title'] = 'Update User Information'
 
     if (request.method == 'POST'):
-        database.change_password(user_details['username'],request.form['newPassword']))
-        database.change_email(user_details['username'],request.form['newEmail']))
-        database.change_phone(user_details['username'],request.form['newPhone']))
-        database.change_social(user_details['username'],request.form['newSocial']))
-        redirect(url_for('login'))    
+        database.change_password(user_details['username'],request.form['newPassword'])
+        database.change_email(user_details['username'],request.form['newEmail'])
+        database.change_phone(user_details['username'],request.form['newPhone'])
+        database.change_social(user_details['username'],request.form['newSocial'])
+        redirect(url_for('login'))
