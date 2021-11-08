@@ -1674,7 +1674,7 @@ def movie_fuzzy_search(input):
         #########
 
         #############################################################################
-        # Fill in the SQL below with a query to get all fuzzy match movies.                                      
+        # Fill in the SQL below with a query to get all fuzzy match movies.
         #############################################################################
         sql = """
                 SELECT movie_title
@@ -1698,12 +1698,39 @@ def movie_fuzzy_search(input):
         raise
         return None
         
-        
-        
-        
 
+#####################################################
+#   Get Super User
+#####################################################
+def is_super_user(username):
+    """
+    Check if the user is super user
+    """
+    conn = database_connect()
+    if (conn is None):
+        return None
+    cur = conn.cursor()
+    try:
+        # Try executing the SQL and get from the database
+        sql = """
+            select issuper 
+	            from mediaserver.useraccount
+	            where username =%s
+	        """
 
-
+        r = dictfetchone(cur, sql)
+        print("return val is:")
+        print(r)
+        cur.close()  # Close the cursor
+        conn.close()  # Close the connection to the db
+        return r
+    except:
+        # If there were any errors, return a NULL row printing an error to the debug
+        print("Unexpected error adding a song", sys.exc_info()[0])
+        raise
+    cur.close()  # Close the cursor
+    conn.close()  # Close the connection to the db
+    return None
 
 
 
