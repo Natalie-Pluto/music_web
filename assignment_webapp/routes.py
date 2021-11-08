@@ -1021,9 +1021,23 @@ def updateUserInfo():
 
     page['title'] = 'Update User Information'
 
+    newPassword = None
+    print("request form is:")
+    newdict = {}
+    print(request.form)
+
     if (request.method == 'POST'):
-        database.change_password(user_details['username'],request.form['newPassword'])
-        database.change_email(user_details['username'],request.form['newEmail'])
-        database.change_phone(user_details['username'],request.form['newPhone'])
-        database.change_social(user_details['username'],request.form['newSocial'])
-        redirect(url_for('login'))
+        if ('' not in request.form):
+            newdict['song_title'] = 'Empty Song Value'
+        else:
+            newdict['song_title'] = request.form['song_title']
+            print("We have a value: ", newdict['song_title'])
+
+        return redirect(url_for('login'))
+
+'''
+database.change_password(user_details['username'],request.form['newPassword'])
+database.change_email(user_details['username'],request.form['newEmail'])
+database.change_phone(user_details['username'],request.form['newPhone'])
+database.change_social(user_details['username'],request.form['newSocial'])
+'''
